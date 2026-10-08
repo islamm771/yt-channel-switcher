@@ -1,0 +1,25 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// قناة يوتيوب متربطة بـ "صاحب" ثابت (ownerId) مش بإيميل Google المتغيّر مع كل حساب
+model Channel {
+  id           String   @id @default(cuid())
+  ownerId      String // هوية ثابتة للمتصفح/الشخص، مش إيميل Google (اللي بيتغيّر مع كل قناة)
+  channelId    String // معرف قناة يوتيوب نفسها (من YouTube Data API)
+  title        String
+  thumbnail    String?
+  accessToken  String
+  refreshToken String
+  expiresAt    Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([ownerId, channelId])
+  @@index([ownerId])
+}
